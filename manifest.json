@@ -1,0 +1,33 @@
+{
+	"name": "__MSG_kuaipan_name__",
+	"short_name": "__MSG_kuaipan_short_name__",
+	"description": "__MSG_kuaipan_description__",
+	"version": "0.1",
+	"author": "Uranus Zhou",
+	"manifest_version": 2,
+	"minimum_chrome_version": "40",
+	"default_locale": "en",
+	"app": {
+		"background": {
+			"scripts": ["js/hmac-sha1.js", "js/enc-base64-min.js", "js/oauth-1.0a.js", "js/jquery-2.1.3.min.js", "js/chrome.sockets.tcp.xhr.js", "js/kuaipan.js", "background.js"]
+		}
+	},
+	"permissions": [
+		"identity",
+		"storage",
+		"fileSystemProvider",
+		"http://*.kuaipan.cn/",
+		"https://*.kuaipan.cn/",
+		"http://*.kuaipandata.com/",
+		"https://*.kuaipandata.com/"
+	],
+	"file_system_provider_capabilities": {
+		"source": "network"
+	},
+	"sockets": {
+		"tcp" : {
+			"connect": ["*.kuaipan.cn:*"]
+		}
+	},
+	"icons": { "48": "icons/48.png", "128": "icons/128.png"}
+}

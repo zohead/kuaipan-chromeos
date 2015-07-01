@@ -1,0 +1,34 @@
+{
+	"kuaipan_name": {
+		"message": "快盘文件系统",
+		"description": ""
+	},
+	"kuaipan_short_name": {
+		"message": "快盘",
+		"description": ""
+	},
+	"kuaipan_description": {
+		"message": "为 Chrome OS 提供快盘云存储文件系统支持",
+		"description": ""
+	},
+	"kuaipan_mount": {
+		"message": "挂载快盘",
+		"description": ""
+	},
+	"kuaipan_umount": {
+		"message": "断开快盘",
+		"description": ""
+	},
+	"kuaipan_reg": {
+		"message": "注册快盘云存储空间帐号",
+		"description": ""
+	},
+	"kuaipan_logfail": {
+		"message": "登录验证失败",
+		"description": ""
+	},
+	"kuaipan_onlycros": {
+		"message": "抱歉, 此 App 只能在 Chrome OS 下工作.",
+		"description": ""
+	}
+}

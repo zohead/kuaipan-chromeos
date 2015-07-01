@@ -1,0 +1,34 @@
+{
+	"kuaipan_name": {
+		"message": "Kuaipan file system",
+		"description": ""
+	},
+	"kuaipan_short_name": {
+		"message": "Kuaipan",
+		"description": ""
+	},
+	"kuaipan_description": {
+		"message": "Provide Kuaipan cloud file system for Chrome OS",
+		"description": ""
+	},
+	"kuaipan_mount": {
+		"message": "Mount Kuaipan",
+		"description": ""
+	},
+	"kuaipan_umount": {
+		"message": "Umount Kuaipan",
+		"description": ""
+	},
+	"kuaipan_reg": {
+		"message": "Register a Kuaipan cloud storage account",
+		"description": ""
+	},
+	"kuaipan_logfail": {
+		"message": "Login or authenticate failed",
+		"description": ""
+	},
+	"kuaipan_onlycros": {
+		"message": "Sorry, this App only works on Chrome OS.",
+		"description": ""
+	}
+}
