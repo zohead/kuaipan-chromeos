@@ -2,7 +2,7 @@
 	"name": "__MSG_kuaipan_name__",
 	"short_name": "__MSG_kuaipan_short_name__",
 	"description": "__MSG_kuaipan_description__",
-	"version": "0.1",
+	"version": "0.1.1",
 	"author": "Uranus Zhou",
 	"manifest_version": 2,
 	"minimum_chrome_version": "40",

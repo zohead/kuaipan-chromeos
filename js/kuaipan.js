@@ -92,6 +92,10 @@ function kp_redirect_url(url, rdata, token, func)
 			func(response);
 		}
 	};
+	xhr.ontimeout = function() {
+		var response = { ret: 1, status: this.status, data: "time out" };
+		func(response);
+	};
 	xhr.onerror = function (error) {
 		var response = { ret: 1, status: this.status, data: error.error };
 		func(response);
@@ -170,12 +174,33 @@ function kp_read(rpath, offset, length, func)
 				func(response);
 			}
 		};
+		xhr.ontimeout = function() {
+			var lastError = chrome.runtime.lastError;
+			if (lastError != null && typeof(lastError) != "undefined")
+				console.log("Read file timeout: " + lastError.message);
+			else
+				console.log("Read file timeout.");
+
+			var response = { ret: 1, status: this.status, data: "time out" };
+			func(response);
+		};
 		xhr.onerror = function (error) {
+			var lastError = chrome.runtime.lastError;
+			if (lastError != null && typeof(lastError) != "undefined")
+				console.log("Read file error: " + lastError.message);
+			else
+				console.log("Read file error.");
+
 			var response = { ret: 1, status: this.status, data: error.error };
 			func(response);
 		};
 		xhr.responseType = "arraybuffer";
-		xhr.recvTimeout = 1200;	// timeout for receive first data
+		xhr.recvTimeout = 10000;	// timeout for receive first data
+		// maximum 30 seconds timeout for Chrome OS 512KB read trunk
+		if (length <= 524288) {
+			xhr.timeout = (length * 30000) / 524288;
+			if (xhr.timeout < 10000) xhr.timeout = 10000;
+		}
 		xhr.open('GET', response.data.url);
 		// follow cookies
 		if (response.data.headers.hasOwnProperty("Set-Cookie"))

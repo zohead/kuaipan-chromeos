@@ -217,16 +217,24 @@ chrome.fileSystemProvider.onCloseFileRequested.addListener(function (options, su
 function __kuaipan_read(reqid, offset, length, successCallback, errorCallback)
 {
 	kp_read(__KP_OPEN_FILES[reqid].path, offset, length, function (response) {
-		if (!__KP_OPEN_FILES.hasOwnProperty(reqid))
+		if (!__KP_OPEN_FILES.hasOwnProperty(reqid)) {
+			var lastError = chrome.runtime.lastError;
+			if (lastError != null && typeof(lastError) != "undefined")
+				console.log("KuaiPan invalid read request: " + lastError.message);
+
 			errorCallback("FAILED");
-		else {
+		} else {
 			__KP_OPEN_FILES[reqid].inuse = 0;
 			if (response.ret == 0) {
+				var lastError = chrome.runtime.lastError;
+				if (lastError != null && typeof(lastError) != "undefined")
+					console.log("KuaiPan temp read: " + lastError.message);
+
 				successCallback(response.data, false);
 			} else {
 				console.log("Fail to read '" + __KP_OPEN_FILES[reqid].path + "', offset: " + offset + ", length: " + length + " after " + __KP_OPEN_FILES[reqid].failcnt + " tries.");
-				// retry maximum 5 times for one request or fail
-				if (__KP_OPEN_FILES[reqid].failcnt >= 5)
+				// retry maximum 10 times for one request or fail
+				if (__KP_OPEN_FILES[reqid].failcnt >= 10)
 					errorCallback("FAILED");
 				else
 					__kuaipan_read(reqid, offset, length, successCallback, errorCallback);
