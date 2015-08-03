@@ -145,6 +145,7 @@ function kp_get_thumb_datauri(rpath, func)
 			url: response.data.url,
 			type: "GET",
 			dataType: "binary",
+			timeout: 1500,
 			processData: false,
 			success: function(result) {
 				var fileReader = new FileReader();
@@ -152,6 +153,12 @@ function kp_get_thumb_datauri(rpath, func)
 					func({ ret: 0, data: fileLoadedEvent.target.result });
 				}
 				fileReader.readAsDataURL(result);
+			},
+			failure: function(result) {
+				func({ ret: 1, data: result });
+			},
+			error: function(xhr, status){
+				func({ ret: 1, data: status });
 			}
 		});
 	});
