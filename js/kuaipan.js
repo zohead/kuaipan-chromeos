@@ -177,16 +177,22 @@ function kp_read(rpath, offset, length, func)
 		var xhr = new chrome.sockets.tcp.xhr();
 		xhr.onreadystatechange = function() {
 			if (this.readyState === this.DONE) {
-				var response = { ret: 0, status: this.status, data: this.response };
-				func(response);
+				if (this.status == 200 || this.status == 206) {
+					var response = { ret: 0, status: this.status, data: this.response };
+					func(response);
+				} else {
+					console.log("Read file: " + rpath + ", status: " + this.status + ", offset: " + offset + ", length: " + length + ", retlen: " + this.response.byteLength + ".");
+					var response = { ret: 3, status: this.status, data: "invalid status" };
+					func(response);
+				}
 			}
 		};
 		xhr.ontimeout = function() {
 			var lastError = chrome.runtime.lastError;
 			if (lastError != null && typeof(lastError) != "undefined")
-				console.log("Read file timeout: " + lastError.message);
+				console.log("Read file " + rpath + " timeout: " + lastError.message);
 			else
-				console.log("Read file timeout.");
+				console.log("Read file " + rpath + " timeout.");
 
 			var response = { ret: 1, status: this.status, data: "time out" };
 			func(response);
@@ -318,7 +324,7 @@ function kp_upload(rpath, roverwrite, rdata, func)
 			func(response);
 			return;
 		}
-		console.log(response.data.url);
+		console.log("Upload server for path '" + rpath + "' is: " + response.data.url + ".");
 
 		// get filename
 		var pos = rpath.lastIndexOf('/');
@@ -330,7 +336,7 @@ function kp_upload(rpath, roverwrite, rdata, func)
 			data: { oauth_token: KP_REAL_TOKEN.public, overwrite: roverwrite, root: "kuaipan", path: rpath }
 		};
 		var nurl = reqdata.url + "?" + kp_oauth.getParameterString(reqdata, kp_oauth.authorize(reqdata, KP_REAL_TOKEN));
-		
+
 		var b_data = new FormData();
 		// create empty Blob or use passed in File
 		if (rdata == null) rdata = new Blob([""], { type: "text/plain"});
@@ -347,6 +353,7 @@ function kp_upload(rpath, roverwrite, rdata, func)
 			var response = { ret: 0, status: 200, data: ret };
 			func(response);
 		}).fail(function(obj, sts, err) {
+			console.log("Upload file '" + rpath + "' failed, status: " + obj.status + ".");
 			var response = { ret: 1, status: obj.status, text: sts, data: err };
 			func(response);
 		});

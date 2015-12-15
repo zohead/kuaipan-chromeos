@@ -233,8 +233,8 @@ function __kuaipan_read(reqid, offset, length, successCallback, errorCallback)
 				successCallback(response.data, false);
 			} else {
 				console.log("Fail to read '" + __KP_OPEN_FILES[reqid].path + "', offset: " + offset + ", length: " + length + " after " + __KP_OPEN_FILES[reqid].failcnt + " tries.");
-				// retry maximum 10 times for one request or fail
-				if (__KP_OPEN_FILES[reqid].failcnt >= 10)
+				// retry maximum 12 times for one request or fail
+				if (__KP_OPEN_FILES[reqid].failcnt >= 12)
 					errorCallback("FAILED");
 				else
 					__kuaipan_read(reqid, offset, length, successCallback, errorCallback);
@@ -298,18 +298,25 @@ chrome.fileSystemProvider.onDeleteEntryRequested.addListener(function (options, 
 	});
 });
 
+function __kuaipan_create(rpath, createfailcnt, successCallback, errorCallback)
+{
+	// try create file for incase buggy KuaiPan server error
+	kp_upload(rpath, false, null, function (upres) {
+		if (upres.ret == 0)
+			successCallback();
+		else if (createfailcnt >= 0)
+			fail_upload_err(upres, errorCallback);
+		else
+			__kuaipan_create(rpath, ++createfailcnt, successCallback, errorCallback);
+	});
+}
+
 chrome.fileSystemProvider.onCreateFileRequested.addListener(function (options, successCallback, errorCallback) {
 	kp_stat(options.filePath, function (response) {
 		if (response.ret == 0)
 			errorCallback("EXISTS");
-		else {
-			kp_upload(options.filePath, false, null, function (upres) {
-				if (upres.ret == 0)
-					successCallback();
-				else
-					fail_upload_err(upres, errorCallback);
-			});
-		}
+		else
+			__kuaipan_create(options.filePath, 0, successCallback, errorCallback);
 	});
 });
 
